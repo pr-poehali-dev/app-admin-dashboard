@@ -16,14 +16,20 @@ const systems = {
     name: "ТСИ",
     description: "Технические системы информации",
     status: "online",
-    environments: ["ПРОД", "ТЕСТ"],
+    environments: ["ПРОД", "ПСИ", "НТ"],
   },
   VIS: {
     name: "ВИС",
     description: "Внешние информационные системы",
     status: "online",
-    environments: ["ПРОД", "ТЕСТ"],
+    environments: ["ПРОД", "ПСИ", "НТ"],
   },
+};
+
+const environmentColors = {
+  ПРОД: "bg-red-600 text-white data-[state=active]:bg-red-600 data-[state=active]:text-white",
+  ПСИ: "bg-purple-600 text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white",
+  НТ: "bg-blue-600 text-white data-[state=active]:bg-blue-600 data-[state=active]:text-white",
 };
 
 const managementElements = [
@@ -139,10 +145,14 @@ const Index = () => {
           onValueChange={setActiveEnvironment}
           className="mb-6"
         >
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-lg grid-cols-3">
             {systems[selectedSystem as keyof typeof systems].environments.map(
               (env) => (
-                <TabsTrigger key={env} value={env} className="font-medium">
+                <TabsTrigger
+                  key={env}
+                  value={env}
+                  className={`font-medium ${environmentColors[env as keyof typeof environmentColors]}`}
+                >
                   {env}
                 </TabsTrigger>
               ),
