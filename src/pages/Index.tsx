@@ -14,22 +14,69 @@ import Icon from "@/components/ui/icon";
 const systems = {
   TSI: {
     name: "ТСИ",
+    code: "2934",
+    criticality: "mission critical",
     description: "Технические системы информации",
     status: "online",
     environments: ["ПРОД", "ПСИ", "НТ"],
   },
   VIS: {
     name: "ВИС",
+    code: "1491_12",
+    criticality: "business critical",
     description: "Внешние информационные системы",
+    status: "online",
+    environments: ["ПРОД", "ПСИ", "НТ"],
+  },
+  MIL_MORTGAGE: {
+    name: "Военная Ипотека",
+    code: "2115",
+    criticality: "business critical",
+    description: "Система военной ипотеки",
+    status: "online",
+    environments: ["ПРОД", "ПСИ", "НТ"],
+  },
+  OPS_SUPPORT: {
+    name: "ОПС Обеспечение",
+    code: "3303",
+    criticality: "business critical",
+    description: "Обязательное пенсионное страхование",
+    status: "online",
+    environments: ["ПРОД", "ПСИ", "НТ"],
+  },
+  SERVICE: {
+    name: "Обслуживание",
+    code: "1491_14",
+    criticality: "standard",
+    description: "Система обслуживания клиентов",
+    status: "online",
+    environments: ["ПРОД", "ПСИ", "НТ"],
+  },
+  ESCROW: {
+    name: "Эскроу и Аккредитивы",
+    code: "1515",
+    criticality: "business critical",
+    description: "Эскроу счета и аккредитивы",
     status: "online",
     environments: ["ПРОД", "ПСИ", "НТ"],
   },
 };
 
 const environmentColors = {
-  ПРОД: "bg-red-600 text-white data-[state=active]:bg-red-600 data-[state=active]:text-white",
-  ПСИ: "bg-purple-600 text-white data-[state=active]:bg-purple-600 data-[state=active]:text-white",
-  НТ: "bg-blue-600 text-white data-[state=active]:bg-blue-600 data-[state=active]:text-white",
+  ПРОД: "data-[state=active]:bg-red-600 data-[state=active]:text-white hover:bg-red-600/20",
+  ПСИ: "data-[state=active]:bg-purple-600 data-[state=active]:text-white hover:bg-purple-600/20",
+  НТ: "data-[state=active]:bg-green-600 data-[state=active]:text-white hover:bg-green-600/20",
+};
+
+const getCriticalityBadge = (criticality: string) => {
+  switch (criticality) {
+    case "mission critical":
+      return { variant: "destructive" as const, text: "Mission Critical" };
+    case "business critical":
+      return { variant: "default" as const, text: "Business Critical" };
+    default:
+      return { variant: "secondary" as const, text: "Standard" };
+  }
 };
 
 const managementElements = [
@@ -109,18 +156,29 @@ const Index = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium">{system.name}</div>
+                    <div className="text-xs text-sidebar-foreground/50 mb-1">
+                      Код: {system.code}
+                    </div>
                     <div className="text-sm text-sidebar-foreground/70">
                       {system.description}
                     </div>
                   </div>
-                  <Badge
-                    variant={
-                      system.status === "online" ? "default" : "destructive"
-                    }
-                    className="text-xs"
-                  >
-                    {system.status === "online" ? "Онлайн" : "Офлайн"}
-                  </Badge>
+                  <div className="flex flex-col gap-1">
+                    <Badge
+                      variant={
+                        system.status === "online" ? "default" : "destructive"
+                      }
+                      className="text-xs"
+                    >
+                      {system.status === "online" ? "Онлайн" : "Офлайн"}
+                    </Badge>
+                    <Badge
+                      variant={getCriticalityBadge(system.criticality).variant}
+                      className="text-xs"
+                    >
+                      {getCriticalityBadge(system.criticality).text}
+                    </Badge>
+                  </div>
                 </div>
               </button>
             ))}
@@ -131,12 +189,37 @@ const Index = () => {
       {/* Main Content */}
       <div className="ml-64 p-6">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold text-foreground mb-2">
-            Система {systems[selectedSystem as keyof typeof systems].name}
-          </h2>
-          <p className="text-muted-foreground">
-            {systems[selectedSystem as keyof typeof systems].description}
-          </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="text-3xl font-bold text-foreground mb-2">
+                Система {systems[selectedSystem as keyof typeof systems].name}
+              </h2>
+              <p className="text-muted-foreground mb-2">
+                {systems[selectedSystem as keyof typeof systems].description}
+              </p>
+              <div className="flex gap-2 items-center">
+                <Badge variant="outline" className="text-xs">
+                  Код: {systems[selectedSystem as keyof typeof systems].code}
+                </Badge>
+                <Badge
+                  variant={
+                    getCriticalityBadge(
+                      systems[selectedSystem as keyof typeof systems]
+                        .criticality,
+                    ).variant
+                  }
+                  className="text-xs"
+                >
+                  {
+                    getCriticalityBadge(
+                      systems[selectedSystem as keyof typeof systems]
+                        .criticality,
+                    ).text
+                  }
+                </Badge>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Environment Tabs */}
