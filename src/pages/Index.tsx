@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -124,6 +125,12 @@ const managementElements = [
 const Index = () => {
   const [selectedSystem, setSelectedSystem] = useState("TSI");
   const [activeEnvironment, setActiveEnvironment] = useState("ПРОД");
+  const navigate = useNavigate();
+
+  const handleMonitoringClick = () => {
+    const systemName = systems[selectedSystem as keyof typeof systems].name;
+    navigate(`/monitoring?system=${encodeURIComponent(systemName)}&env=${encodeURIComponent(activeEnvironment)}`);
+  };
 
   return (
     <div className="min-h-screen bg-background dark">
@@ -292,7 +299,11 @@ const Index = () => {
                             <Icon name="Settings" className="w-4 h-4 mr-1" />
                             Настроить
                           </Button>
-                          <Button size="sm" className="flex-1">
+                          <Button 
+                            size="sm" 
+                            className="flex-1"
+                            onClick={element.id === "monitoring" ? handleMonitoringClick : undefined}
+                          >
                             <Icon name="Play" className="w-4 h-4 mr-1" />
                             Открыть
                           </Button>
